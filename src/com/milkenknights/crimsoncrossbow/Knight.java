@@ -48,7 +48,7 @@ public class Knight extends IterativeRobot {
     }
 
     public void autonomousPeriodic() {
-        SmartDashboard.putNumber("test",1);
+        
     }
 
     public void teleopInit() {
