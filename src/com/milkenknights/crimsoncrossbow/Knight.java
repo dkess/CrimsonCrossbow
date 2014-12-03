@@ -3,6 +3,7 @@ package com.milkenknights.crimsoncrossbow;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Watchdog;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -19,6 +20,7 @@ public class Knight extends IterativeRobot {
     ShooterSubsystem shooterSubsystem;
 
     ControlSystem controlSystem;
+    NetworkTableSystem networkTableSystem;
 
     public void robotInit() {
         config = new RobotConfig();
@@ -31,6 +33,10 @@ public class Knight extends IterativeRobot {
         shooterSubsystem = new ShooterSubsystem(config);
 
         controlSystem = new TripleATKControl(casterSubsystem,
+                driveSubsystem,
+                hookClimbSubsystem,
+                shooterSubsystem);
+        NetworkTableSystem networkTableSystem = new NetworkTableSystem(casterSubsystem,
                 driveSubsystem,
                 hookClimbSubsystem,
                 shooterSubsystem);
@@ -54,7 +60,7 @@ public class Knight extends IterativeRobot {
     }
 
     public void autonomousPeriodic() {
-
+        networkTableSystem.update();
     }
 
     public void teleopInit() {
@@ -70,8 +76,14 @@ public class Knight extends IterativeRobot {
             ((Subsystem) e.nextElement()).update();
         }
 
+        networkTableSystem.update();
+        
         // Feed the Watchdog.
         Watchdog.getInstance().feed();
+    }
+    
+    public void disabledPeriodic() {
+        networkTableSystem.update();
     }
 
     public void testPeriodic() {

@@ -19,7 +19,7 @@ public class ShooterSubsystem extends Subsystem {
     private SpeedController kicker;
 
     private Counter shooterEnc;
-
+    
     public ShooterSubsystem(RobotConfig config) {
         shooter = new Talon(config.getAsInt("tShooter"));
         actuator = new Talon(config.getAsInt("tActuator"));
@@ -50,6 +50,14 @@ public class ShooterSubsystem extends Subsystem {
         shooter.set(0);
         kicker.set(0);
         System.out.println("0 off");
+    }
+    
+    public double getRPM() {
+        return periodToRPM(shooterEnc.getPeriod());
+    }
+    
+    public boolean getShooting() {
+        return actuator.get() != 0.0;
     }
 
     /**

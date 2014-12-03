@@ -135,6 +135,10 @@ public class DriveSubsystem extends Subsystem {
     public boolean pidOnTarget(double threshold) {
         return leftPID.onTarget() && rightPID.onTarget();
     }
+    
+    public double getSpeed() {
+        return (drive.getLeft() + drive.getRight()) / 2;
+    }
 
     /**
      * Updates wheels depending on driveMode (which should be set to the desired
