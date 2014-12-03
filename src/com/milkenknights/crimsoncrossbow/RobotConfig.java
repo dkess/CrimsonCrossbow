@@ -3,6 +3,7 @@ package com.milkenknights.crimsoncrossbow;
 import java.util.Hashtable;
 
 public class RobotConfig {
+
     private static final Hashtable defaultConfig;
 
     static {
@@ -50,6 +51,7 @@ public class RobotConfig {
     public String customGet(Object k) {
         return null;
     }
-    
-    public RobotConfig() {}
+
+    public RobotConfig() {
+    }
 }

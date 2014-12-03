@@ -7,6 +7,7 @@ package com.milkenknights.crimsoncrossbow;
  * @author danielk
  */
 public class JStickMultiton {
+
     public static final int MAX_JOYSTICKS = 4;
     private static final JStick[] joysticks = new JStick[MAX_JOYSTICKS];
 

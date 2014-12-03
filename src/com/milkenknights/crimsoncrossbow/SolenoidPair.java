@@ -3,6 +3,7 @@ package com.milkenknights.crimsoncrossbow;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class SolenoidPair {
+
     private Solenoid sa;
     private Solenoid sb;
 

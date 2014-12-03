@@ -22,7 +22,6 @@ public class Knight extends IterativeRobot {
 
     public void robotInit() {
         config = new RobotConfig();
-        //config.loadFile();
 
         compressor = new Compressor(config.getAsInt("compressorPressureSwitch"),
                 config.getAsInt("compressorRelayChannel"));

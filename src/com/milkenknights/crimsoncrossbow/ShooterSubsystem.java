@@ -43,15 +43,15 @@ public class ShooterSubsystem extends Subsystem {
         }
         shooter.set(shooterOutput);
         kicker.set(shooterOutput);
-		System.out.println(shooterOutput);
+        System.out.println(shooterOutput);
     }
 
     public void shooterOff() {
         shooter.set(0);
         kicker.set(0);
-		System.out.println("0 off");
+        System.out.println("0 off");
     }
-	
+
     /**
      * Uses the Bang-Bang algorithm to return a power to send to the motor.
      * Calculates RPM based on what source gives it

@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 
 public class TalonPair implements SpeedController {
+
     private Talon ma;
     private Talon mb;
 
@@ -20,7 +21,7 @@ public class TalonPair implements SpeedController {
      * @param b The PWM channel that the second Talon is attached to.
      */
     public TalonPair(int a, int b) {
-		// if we aren't told that the motors are reversed or not,
+        // if we aren't told that the motors are reversed or not,
         // set them to false by default
         this(a, false, b, false);
     }
@@ -68,7 +69,7 @@ public class TalonPair implements SpeedController {
         mb.disable();
     }
 
-	// we have to implement these methods as part of SpeedController
+    // we have to implement these methods as part of SpeedController
     // even though they're not really used
     public void pidWrite(double output) {
         ma.pidWrite(reva ? -output : output);

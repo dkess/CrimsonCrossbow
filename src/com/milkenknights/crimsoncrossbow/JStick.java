@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Joystick;
  * @author Daniel Kessler
  */
 public class JStick {
+
     public static final int XBOX_A = 1;
     public static final int XBOX_B = 2;
     public static final int XBOX_X = 3;
@@ -48,25 +49,27 @@ public class JStick {
         axes = new double[MAX_AXES + 1];
         slowAxes = new double[MAX_AXES + 1];
         slow = 2;
-        
-        axisInfos = new AxisInfo[MAX_AXES+1];
+
+        axisInfos = new AxisInfo[MAX_AXES + 1];
         for (int i = 0; i < axisInfos.length; i++) {
             axisInfos[i] = new AxisInfo();
         }
     }
 
     private class AxisInfo {
-        public AxisInfo() {}
-        
+
+        public AxisInfo() {
+        }
+
         private double currentValue;
         private double slowedValue;
-        
+
         public double slowThreshold = 0.1;
         // if slowTime >= 0, the axis is being slowed
         public int slowTime = -1;
         private double initialSlowSpeed;
         private boolean movingUp;
-        
+
         public void update(double newValue) {
             if (slowTime < 0) {
                 if (newValue - currentValue > slowThreshold) {
@@ -93,26 +96,26 @@ public class JStick {
                 }
                 if (movingUp == (newValue > initialSlowSpeed)) {
                     int mod = movingUp ? 1 : -1;
-                    slowedValue =
-                            initialSlowSpeed + mod * 0.0004 * slowTime * slowTime;
+                    slowedValue
+                            = initialSlowSpeed + mod * 0.0004 * slowTime * slowTime;
                     slowTime++;
                 } else {
                     slowTime = -1;
                 }
-                
+
                 if (movingUp == (slowedValue > currentValue)) {
                     slowedValue = currentValue;
                     slowTime = -1;
                 }
             }
-            
+
             currentValue = newValue;
         }
-        
+
         public double getValue() {
             return currentValue;
         }
-        
+
         public double getSlowedValue() {
             if (slowTime < 0) {
                 return currentValue;
@@ -121,28 +124,13 @@ public class JStick {
             }
         }
     }
-    
+
     public void update() {
         for (int i = 1; i < buttonPressed.length; ++i) {
             buttonLastPressed[i] = buttonPressed[i];
             buttonPressed[i] = jstick.getRawButton(i);
         }
-        
-        /*
-        for (int i = 1; i < axes.length; ++i) {
-            double newAxis = jstick.getRawAxis(i);
 
-            if (newAxis - axes[i] > slow) {
-                slowAxes[i] += slow;
-            } else if (axes[i] - newAxis > slow) {
-                slowAxes[i] -= slow;
-            } else {
-                slowAxes[i] = newAxis;
-            }
-            axes[i] = newAxis;    
-        }
-        */
-        
         for (int i = 1; i < axisInfos.length; i++) {
             axisInfos[i].update(jstick.getRawAxis(i));
         }
@@ -214,7 +202,7 @@ public class JStick {
             return 0;
         }
     }
-    
+
     public double getSlowTime(int b) {
         return axisInfos[b].slowTime;
     }

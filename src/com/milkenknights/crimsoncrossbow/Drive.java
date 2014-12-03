@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj.SpeedController;
  * @author Daniel Kessler
  */
 public class Drive extends RobotDrive {
-	// thanks to team 254 for CheesyDrive
+
+    // thanks to team 254 for CheesyDrive
     // cheesy drive uses one joystick for throttle, and the other for turning
     // also supports a "quickturn" function that allows the robot to spin
     // in place
