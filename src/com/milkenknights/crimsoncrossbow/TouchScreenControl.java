@@ -75,8 +75,7 @@ public class TouchScreenControl extends ControlSystem {
         hookClimbSub.setHookClimb(controlTable.getBoolean("hook_climb", false));
 
         // SHOOTER CONTROL
-        // AUX ATK 2 spins at high speed. AUX ATK 4 or 5 spin at low speed.
-        // AUX trigger spins actuator (shoots the frisbee)
+        // controlled by network tables.
         if (controlTable.getString("shooter_speed", "").equals("HIGH")) {
             shooterSub.bangBangShooter(true, ShooterSubsystem.SHOOTER_RPM_HIGH);
             System.out.println("high");
