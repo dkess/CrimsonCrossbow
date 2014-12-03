@@ -11,14 +11,7 @@ public abstract class Subsystem {
 	public void teleopInit() {
 		
 	}
-	
-	/**
-	 * This function will be run periodically during teleop mode.
-	 */
-	public void teleopPeriodic() {
 		
-	}
-	
 	/**
 	 * This function will be run periodically during both teleop and
 	 * autonomous, and will always be run at the end of any given loop.

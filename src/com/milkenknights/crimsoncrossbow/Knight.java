@@ -18,6 +18,8 @@ public class Knight extends IterativeRobot {
     HookClimbSubsystem hookClimbSubsystem;
     CasterSubsystem casterSubsystem;
     ShooterSubsystem shooterSubsystem;
+	
+	ControlSystem controlSystem;
     
     public void robotInit() {
         config = new RobotConfig();
@@ -29,6 +31,11 @@ public class Knight extends IterativeRobot {
         hookClimbSubsystem = new HookClimbSubsystem(config);
         casterSubsystem = new CasterSubsystem(config);
         shooterSubsystem = new ShooterSubsystem(config);
+		
+		controlSystem = new TripleATKControl(casterSubsystem,
+			driveSubsystem,
+			hookClimbSubsystem,
+			shooterSubsystem);
 
         subsystems = new Vector(10);
 
@@ -45,6 +52,7 @@ public class Knight extends IterativeRobot {
     }
 
     public void autonomousInit() {
+		driveSubsystem.setDriveMode(DriveSubsystem.PIDSTRAIGHT);
     }
 
     public void autonomousPeriodic() {
@@ -58,26 +66,13 @@ public class Knight extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-        JStickMultiton.updateAll();
+		controlSystem.teleopPeriodic();
+		
+		for (Enumeration e = subsystems.elements(); e.hasMoreElements();) {
+			((Subsystem) e.nextElement()).update();
+		}
 
-        for (Enumeration e = subsystems.elements(); e.hasMoreElements();) {
-            Subsystem s = (Subsystem) e.nextElement();
-            //System.out.println("Subsystem "+i+" running");
-            double fullTime = 0;
-            double startTime = Timer.getFPGATimestamp();
-
-            s.teleopPeriodic();
-
-            //System.out.println("teleop: "+(Timer.getFPGATimestamp() - startTime));
-            fullTime = Timer.getFPGATimestamp() - startTime;
-
-            s.update();
-
-            //System.out.println("update: "+(Timer.getFPGATimestamp() - (startTime + fullTime)));
-            fullTime += Timer.getFPGATimestamp() - (startTime + fullTime);
-            //System.out.println("total "+i+": "+fullTime);
-        }
-
+		
         // Feed the Watchdog.
         Watchdog.getInstance().feed();
     }

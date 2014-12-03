@@ -14,8 +14,6 @@ public class ShooterSubsystem extends Subsystem {
     public static final double SHOOTER_RPM_HIGH = 3700;
     public static final double SHOOTER_RPM_LOW = 3400;
 
-    JStick atka;
-
     private SpeedController shooter;
     private SpeedController actuator;
     private SpeedController kicker;
@@ -23,8 +21,6 @@ public class ShooterSubsystem extends Subsystem {
     private Counter shooterEnc;
 
     public ShooterSubsystem(RobotConfig config) {
-        atka = JStickMultiton.getJStick(3);
-
         shooter = new Talon(config.getAsInt("tShooter"));
         actuator = new Talon(config.getAsInt("tActuator"));
         kicker = new Talon(config.getAsInt("tKicker"));
@@ -47,25 +43,15 @@ public class ShooterSubsystem extends Subsystem {
         }
         shooter.set(shooterOutput);
         kicker.set(shooterOutput);
+		System.out.println(shooterOutput);
     }
 
     public void shooterOff() {
         shooter.set(0);
         kicker.set(0);
+		System.out.println("0 off");
     }
-
-    public void teleopPeriodic() {
-        if (atka.isPressed(2)) {
-            bangBangShooter(true, SHOOTER_RPM_HIGH);
-        } else if (atka.isPressed(4) || atka.isPressed(5)) {
-            bangBangShooter(true, SHOOTER_RPM_LOW);
-        } else {
-            shooterOff();
-        }
-
-        activateActuator(atka.isPressed(1));
-    }
-
+	
     /**
      * Uses the Bang-Bang algorithm to return a power to send to the motor.
      * Calculates RPM based on what source gives it

@@ -15,11 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Jake
  */
 public class DriveSubsystem extends Subsystem {
-    //JStick xbox;
-    
-    JStick atkl;
-    JStick atkr;
-    
     Drive drive;
     
     // true means high gear, false means low gear
@@ -34,7 +29,6 @@ public class DriveSubsystem extends Subsystem {
 
     Gyro gyro;
 
-    boolean normalDriveGear;
     boolean slowMode;
     boolean reverseMode;
     boolean runPID;
@@ -49,13 +43,12 @@ public class DriveSubsystem extends Subsystem {
     
     double tankLeftSpeed;
     double tankRightSpeed;
+	
+	double cheesyPower;
+	double cheesyTurn;
+	boolean cheesyQuickturn;
 
     public DriveSubsystem(RobotConfig config) {
-        //xbox = JStickMultiton.getJStick(1);
-        
-        atkl = JStickMultiton.getJStick(1);
-        atkr = JStickMultiton.getJStick(2);
-        
 		Talon leftWheel = new Talon(config.getAsInt("tLeftWheel"));
 		Talon rightWheel = new Talon(config.getAsInt("tRightWheel"));
 		
@@ -76,8 +69,6 @@ public class DriveSubsystem extends Subsystem {
 		
 		leftPID = new PIDController(0,0,0, leftDriveEncoder, leftWheel);
 		rightPID = new PIDController(0,0,0, rightDriveEncoder, rightWheel);
-		
-		
 		
         /*
         leftPID = new PIDSystem(config.getAsDouble("driveDistance"),
@@ -106,55 +97,21 @@ public class DriveSubsystem extends Subsystem {
         gyro.reset();
     }
 
+	public void toggleGear() {
+		driveGear.toggle();
+	}
+
     public void teleopInit() {
         setDriveMode(TANK);
         reverseMode = false;
+		
+		leftPID.startLiveWindowMode();
+		rightPID.startLiveWindowMode();
+		
+		SmartDashboard.putData("left pid", leftPID);
+		SmartDashboard.putData("right pid", rightPID);
     }
 
-    public void teleopPeriodic() {
-        //if (xbox.isReleased(JStick.XBOX_LB)) {
-        if (atkr.isReleased(1)) {
-            driveGear.toggle();
-            normalDriveGear = driveGear.get();
-        }
-        
-        /*
-        if (xbox.isReleased(JStick.XBOX_Y)) {
-            slowMode = !slowMode;
-
-            if (slowMode) {
-                driveGear.set(false);
-            } else {
-                driveGear.set(normalDriveGear);
-            }
-        }
-
-        if (xbox.isReleased(JStick.XBOX_X)) {
-            reverseMode = !reverseMode;
-        }
-        */
-        
-        
-        // TODO: change these negatives!!
-        //setTankSpeed(-atkl.getSlowedAxis(2), -atkr.getSlowedAxis(2));
-        setTankSpeed(-atkl.getAxis(2), -atkr.getAxis(2));
-        /*
-        SmartDashboard.putNumber("LSY", -atkl.getAxis(2));
-        SmartDashboard.putNumber("LSY slow", -atkl.getSlowedAxis(2));
-        SmartDashboard.putNumber("RSY", -atkr.getAxis(2));
-        SmartDashboard.putNumber("RSY slow", -atkr.getSlowedAxis(2));
-        SmartDashboard.putNumber("L slow time", atkl.getSlowTime(2));
-        */
-        
-        if (atkl.getAxis(2) != atkl.getSlowedAxis(2)) {
-            SmartDashboard.putNumber("L slowed", 0);
-        } else {
-            SmartDashboard.putNumber("L slowed", 1);
-        }
-        
-        SmartDashboard.putBoolean("Drive gear high:", driveGear.get());
-    }
-    
     public void setLeftSpeed(double speed) {
         tankLeftSpeed = speed;
     }
@@ -167,6 +124,12 @@ public class DriveSubsystem extends Subsystem {
         tankLeftSpeed = left;
         tankRightSpeed = right;
     }
+	
+	public void setCheesy(double power, double turn, boolean quickturn) {
+		cheesyPower = power;
+		cheesyTurn = turn;
+		cheesyQuickturn = quickturn;
+	}
 
     public void setStraightPIDSetpoint(double setpoint) {
         //leftPID.changeSetpoint(setpoint);
@@ -187,6 +150,10 @@ public class DriveSubsystem extends Subsystem {
 			rightPID.disable();
 		}
     }
+	
+	public int getDriveMode() {
+		return driveMode;
+	}
 
     public boolean pidOnTarget(double threshold) {
         //return leftPID.onTarget(threshold) && rightPID.onTarget(threshold);
@@ -199,29 +166,12 @@ public class DriveSubsystem extends Subsystem {
      * no matter what.
      */
     public void update() {
+		leftPID.updateTable();
+		rightPID.updateTable();
+		
         SmartDashboard.putNumber("drivemode", driveMode);
         if (driveMode == CHEESY) {
-            /*
-            double power = xbox.getAxis(JStick.XBOX_LSY);
-            double turn = xbox.getAxis(JStick.XBOX_RSX);
-            boolean trigDown
-                    = Math.abs(xbox.getAxis(JStick.XBOX_TRIG)) > 0.5;
-
-            if (reverseMode) {
-                power = -power;
-                turn = -turn;
-            }
-
-            if (slowMode) {
-                power = power * .5;
-            }
-
-            SmartDashboard.putNumber("power", power);
-            SmartDashboard.putNumber("turn", turn);
-            SmartDashboard.putBoolean("td", trigDown);
-
-            drive.cheesyDrive(power, -turn, trigDown);
-            */
+            drive.cheesyDrive(cheesyPower, cheesyTurn, cheesyQuickturn);
         } else if (driveMode == TANK) {
             drive.tankDrive(tankLeftSpeed, tankRightSpeed);
         } else if (driveMode == PIDSTRAIGHT) {
@@ -232,7 +182,9 @@ public class DriveSubsystem extends Subsystem {
         } else {
             drive.tankDrive(0, 0);
         }
-
+		
+		SmartDashboard.putNumber("l dist", leftDriveEncoder.getDistance());
+		SmartDashboard.putNumber("r dist", rightDriveEncoder.getDistance());
         SmartDashboard.putNumber("left", drive.getLeft());
         SmartDashboard.putNumber("right", drive.getRight());
     }
