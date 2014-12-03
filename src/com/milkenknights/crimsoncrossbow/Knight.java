@@ -1,9 +1,7 @@
 package com.milkenknights.crimsoncrossbow;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Watchdog;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -13,11 +11,11 @@ public class Knight extends IterativeRobot {
 
     Vector subsystems;
 
-    Compressor compressor;
     DriveSubsystem driveSubsystem;
     HookClimbSubsystem hookClimbSubsystem;
     CasterSubsystem casterSubsystem;
     ShooterSubsystem shooterSubsystem;
+    PneumaticSubsystem pneumaticSubsystem;
 
     ControlSystem controlSystem;
     NetworkTableSystem networkTableSystem;
@@ -25,21 +23,21 @@ public class Knight extends IterativeRobot {
     public void robotInit() {
         config = new RobotConfig();
 
-        compressor = new Compressor(config.getAsInt("compressorPressureSwitch"),
-                config.getAsInt("compressorRelayChannel"));
         driveSubsystem = new DriveSubsystem(config);
         hookClimbSubsystem = new HookClimbSubsystem(config);
         casterSubsystem = new CasterSubsystem(config);
         shooterSubsystem = new ShooterSubsystem(config);
+        pneumaticSubsystem = new PneumaticSubsystem(config);
 
-        controlSystem = new TripleATKControl(casterSubsystem,
+        networkTableSystem = new NetworkTableSystem(casterSubsystem,
                 driveSubsystem,
                 hookClimbSubsystem,
-                shooterSubsystem);
-        NetworkTableSystem networkTableSystem = new NetworkTableSystem(casterSubsystem,
+                pneumaticSubsystem, shooterSubsystem);
+        controlSystem = new TouchScreenControl(casterSubsystem,
                 driveSubsystem,
                 hookClimbSubsystem,
-                shooterSubsystem);
+                pneumaticSubsystem,
+                shooterSubsystem, networkTableSystem);
 
         subsystems = new Vector(10);
 
@@ -52,7 +50,7 @@ public class Knight extends IterativeRobot {
         // memory
         subsystems.trimToSize();
 
-        compressor.start();
+        pneumaticSubsystem.startCompressor();
     }
 
     public void autonomousInit() {

@@ -14,15 +14,18 @@ public abstract class ControlSystem {
     protected CasterSubsystem casterSub;
     protected DriveSubsystem driveSub;
     protected HookClimbSubsystem hookClimbSub;
+    protected PneumaticSubsystem pneumaticSub;
     protected ShooterSubsystem shooterSub;
 
     protected ControlSystem(CasterSubsystem sCaster,
             DriveSubsystem sDrive,
             HookClimbSubsystem sHookClimb,
+            PneumaticSubsystem sPneumatic,
             ShooterSubsystem sShooter) {
         casterSub = sCaster;
         driveSub = sDrive;
         hookClimbSub = sHookClimb;
+        pneumaticSub = sPneumatic;
         shooterSub = sShooter;
     }
 

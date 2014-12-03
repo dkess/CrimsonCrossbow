@@ -20,9 +20,14 @@ public class TouchScreenControl extends ControlSystem {
     public TouchScreenControl(CasterSubsystem sCaster,
             DriveSubsystem sDrive,
             HookClimbSubsystem sHookClimb,
-            ShooterSubsystem sShooter, NetworkTableSystem networkTable) {
-        super(sCaster, sDrive, sHookClimb, sShooter);
+            PneumaticSubsystem sPneumatic,
+            ShooterSubsystem sShooter,
+            NetworkTableSystem networkTable) {
+        super(sCaster, sDrive, sHookClimb, sPneumatic, sShooter);
         controlTable = networkTable.getControlTable();
+        
+        atkl = new JStick(1);
+        atkr = new JStick(2);
     }
 
     public void teleopPeriodic() {
@@ -75,7 +80,7 @@ public class TouchScreenControl extends ControlSystem {
         hookClimbSub.setHookClimb(controlTable.getBoolean("hook_climb", false));
 
         // SHOOTER CONTROL
-        // controlled by network tables.
+        // controlled by network tables
         if (controlTable.getString("shooter_speed", "").equals("HIGH")) {
             shooterSub.bangBangShooter(true, ShooterSubsystem.SHOOTER_RPM_HIGH);
             System.out.println("high");
@@ -88,5 +93,9 @@ public class TouchScreenControl extends ControlSystem {
         }
 
         shooterSub.activateActuator(controlTable.getBoolean("shooter_shoot", false));
+        
+        // PNEUMATIC CONTROL
+        // controlled by network tables
+        pneumaticSub.setCompressorState(controlTable.getBoolean("compressor_state", true));
     }
 }

@@ -13,8 +13,9 @@ public class TripleATKControl extends ControlSystem {
     public TripleATKControl(CasterSubsystem sCaster,
             DriveSubsystem sDrive,
             HookClimbSubsystem sHookClimb,
+            PneumaticSubsystem sPneumatic,
             ShooterSubsystem sShooter) {
-        super(sCaster, sDrive, sHookClimb, sShooter);
+        super(sCaster, sDrive, sHookClimb, sPneumatic, sShooter);
         atkl = new JStick(1);
         atkr = new JStick(2);
         atka = new JStick(3);

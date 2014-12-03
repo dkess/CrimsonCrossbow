@@ -1,5 +1,6 @@
 package com.milkenknights.crimsoncrossbow;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 /**
@@ -15,15 +16,19 @@ public class NetworkTableSystem {
     private final CasterSubsystem casterSub;
     private final DriveSubsystem driveSub;
     private final HookClimbSubsystem hookClimbSub;
+    private final PneumaticSubsystem pneumaticSub;
     private final ShooterSubsystem shooterSub;
+    
 
     public NetworkTableSystem(CasterSubsystem sCaster,
             DriveSubsystem sDrive,
             HookClimbSubsystem sHookClimb,
+            PneumaticSubsystem sPneumatic,
             ShooterSubsystem sShooter) {
         casterSub = sCaster;
         driveSub = sDrive;
         hookClimbSub = sHookClimb;
+        pneumaticSub = sPneumatic;
         shooterSub = sShooter;
         
         dataTable = NetworkTable.getTable("data_table");
@@ -37,6 +42,8 @@ public class NetworkTableSystem {
         
         dataTable.putNumber("shooter_rpm", shooterSub.getRPM());
         dataTable.putBoolean("shooter_shooting", shooterSub.getShooting());
+        
+        dataTable.putBoolean("compressor_enabled", pneumaticSub.compressorState());
     }
 
     public NetworkTable getControlTable() {
