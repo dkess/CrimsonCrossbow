@@ -2,13 +2,12 @@ package com.milkenknights.crimsoncrossbow;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Watchdog;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.Enumeration;
 import java.util.Vector;
 
 public class Knight extends IterativeRobot {
+
     RobotConfig config;
 
     Vector subsystems;
@@ -18,12 +17,12 @@ public class Knight extends IterativeRobot {
     HookClimbSubsystem hookClimbSubsystem;
     CasterSubsystem casterSubsystem;
     ShooterSubsystem shooterSubsystem;
-	
-	ControlSystem controlSystem;
-    
+
+    ControlSystem controlSystem;
+
     public void robotInit() {
         config = new RobotConfig();
-		//config.loadFile();
+        //config.loadFile();
 
         compressor = new Compressor(config.getAsInt("compressorPressureSwitch"),
                 config.getAsInt("compressorRelayChannel"));
@@ -31,11 +30,11 @@ public class Knight extends IterativeRobot {
         hookClimbSubsystem = new HookClimbSubsystem(config);
         casterSubsystem = new CasterSubsystem(config);
         shooterSubsystem = new ShooterSubsystem(config);
-		
-		controlSystem = new TripleATKControl(casterSubsystem,
-			driveSubsystem,
-			hookClimbSubsystem,
-			shooterSubsystem);
+
+        controlSystem = new TripleATKControl(casterSubsystem,
+                driveSubsystem,
+                hookClimbSubsystem,
+                shooterSubsystem);
 
         subsystems = new Vector(10);
 
@@ -44,7 +43,7 @@ public class Knight extends IterativeRobot {
         subsystems.addElement(casterSubsystem);
         subsystems.addElement(shooterSubsystem);
 
-		// since no more subsystems will be added, we can free the remaining
+        // since no more subsystems will be added, we can free the remaining
         // memory
         subsystems.trimToSize();
 
@@ -52,11 +51,11 @@ public class Knight extends IterativeRobot {
     }
 
     public void autonomousInit() {
-		driveSubsystem.setDriveMode(DriveSubsystem.PIDSTRAIGHT);
+        driveSubsystem.setDriveMode(DriveSubsystem.PIDSTRAIGHT);
     }
 
     public void autonomousPeriodic() {
-        
+
     }
 
     public void teleopInit() {
@@ -66,17 +65,17 @@ public class Knight extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-		controlSystem.teleopPeriodic();
-		
-		for (Enumeration e = subsystems.elements(); e.hasMoreElements();) {
-			((Subsystem) e.nextElement()).update();
-		}
+        controlSystem.teleopPeriodic();
 
-		
+        for (Enumeration e = subsystems.elements(); e.hasMoreElements();) {
+            ((Subsystem) e.nextElement()).update();
+        }
+
         // Feed the Watchdog.
         Watchdog.getInstance().feed();
     }
 
-    public void testPeriodic() {}
+    public void testPeriodic() {
+    }
 
 }
